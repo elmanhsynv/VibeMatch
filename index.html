@@ -158,7 +158,7 @@
             <div id="login-form">
                 <input type="text" id="login-username" placeholder="İstifadəçi adı" required>
                 <input type="password" id="login-password" placeholder="Parol" required>
-                <button type="button" class="btn" onclick="loginSuccess()">Daxil ol</button>
+                <button type="button" class="btn" onclick="processLogin()">Daxil ol</button>
                 <div class="auth-links" style="margin-top: 10px;">
                     <a onclick="toggleAuth('register')">Qeydiyyatdan keç</a>
                     <a onclick="toggleAuth('forgot')">Parolunuzu unutmusunuz?</a>
@@ -334,12 +334,12 @@
                         
                         <div class="settings-row">
                             <span><strong data-i18n="set_name">Ad və Soyad</strong></span>
-                            <input type="text" id="settings-fullname" value="Mənim Adım">
+                            <input type="text" id="settings-fullname" value="">
                         </div>
 
                         <div class="settings-row">
                             <span><strong data-i18n="set_username">İstifadəçi adı</strong></span>
-                            <input type="text" id="settings-username" value="menim_profilim">
+                            <input type="text" id="settings-username" value="">
                         </div>
 
                         <div class="settings-row">
@@ -439,9 +439,8 @@
                         <div class="profile-header">
                             <div class="avatar-round" style="width: 100px; height: 100px; font-size: 40px;" id="profile-main-avatar">M</div>
                             <div>
-                                <h2 style="margin: 0;"><span id="profile-fullname">Mənim Adım</span> <span id="my-premium-badge" style="display:none;"><i class="fas fa-check-circle premium-badge"></i></span></h2>
-                                <p style="margin: 5px 0; color: var(--primary-color);">@<span id="profile-username">menim_profilim</span></p>
-                                <span style="font-size: 13px; color: #666;">Qeydiyyat tarixi: İyun 2026</span>
+                                <h2 style="margin: 0;"><span id="profile-fullname"></span> <span id="my-premium-badge" style="display:none;"><i class="fas fa-check-circle premium-badge"></i></span></h2>
+                                <p style="margin: 5px 0; color: var(--primary-color);">@<span id="profile-username"></span></p>
                             </div>
                         </div>
                         
@@ -547,42 +546,48 @@
             }, 300);
         }
 
-        const mockUsers = []; // TƏMİZLƏNDİ - Gələcəkdə bazadan çəkiləcək
+        const mockUsers = []; 
 
         document.addEventListener("DOMContentLoaded", () => {
+            // "vb_users" obyekti yoxdursa yarat (Bazada istifadəçiləri saxlamaq üçün)
+            if(!localStorage.getItem('vb_users')) {
+                localStorage.setItem('vb_users', JSON.stringify({}));
+            }
+
             if(localStorage.getItem('vb_LoggedIn') === 'true') {
                 document.getElementById('auth-section').style.display = 'none';
                 document.getElementById('main-section').style.display = 'flex';
+                
+                let savedName = localStorage.getItem('vb_fullname');
+                let savedUser = localStorage.getItem('vb_username');
+                let savedAvatar = localStorage.getItem('vb_avatar');
+                
+                if(savedName) {
+                    document.getElementById('profile-fullname').innerText = savedName;
+                    document.getElementById('settings-fullname').value = savedName;
+                }
+                if(savedUser) {
+                    document.getElementById('profile-username').innerText = savedUser;
+                    document.getElementById('settings-username').value = savedUser;
+                }
+                if(savedAvatar) {
+                    let imgTag = `<img src="${savedAvatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                    document.getElementById('profile-main-avatar').innerHTML = imgTag;
+                    document.getElementById('nav-profile-avatar').innerHTML = imgTag;
+                }
+
+                let savedMainFeed = localStorage.getItem('vb_mainFeed');
+                let savedProfileFeed = localStorage.getItem('vb_profileFeed');
+                
+                if(savedMainFeed) document.getElementById('feed-container').innerHTML = savedMainFeed;
+                if(savedProfileFeed) document.getElementById('profile-posts-container').innerHTML = savedProfileFeed;
             } else {
                 document.getElementById('auth-section').style.display = 'flex';
                 document.getElementById('main-section').style.display = 'none';
             }
-
-            let savedName = localStorage.getItem('vb_fullname');
-            let savedUser = localStorage.getItem('vb_username');
-            let savedAvatar = localStorage.getItem('vb_avatar');
-            
-            if(savedName) {
-                document.getElementById('profile-fullname').innerText = savedName;
-                document.getElementById('settings-fullname').value = savedName;
-            }
-            if(savedUser) {
-                document.getElementById('profile-username').innerText = savedUser;
-                document.getElementById('settings-username').value = savedUser;
-            }
-            if(savedAvatar) {
-                let imgTag = `<img src="${savedAvatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
-                document.getElementById('profile-main-avatar').innerHTML = imgTag;
-                document.getElementById('nav-profile-avatar').innerHTML = imgTag;
-            }
-
-            let savedMainFeed = localStorage.getItem('vb_mainFeed');
-            let savedProfileFeed = localStorage.getItem('vb_profileFeed');
-            
-            if(savedMainFeed) document.getElementById('feed-container').innerHTML = savedMainFeed;
-            if(savedProfileFeed) document.getElementById('profile-posts-container').innerHTML = savedProfileFeed;
         });
 
+        // TƏKMİLLƏŞDİRİLMİŞ: Şəkli yaddaşda saxlamazdan əvvəl sıxışdır (LocalStorage limiti dolmasın)
         function compressImage(file, callback) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -613,7 +618,7 @@
                 localStorage.setItem('vb_mainFeed', document.getElementById('feed-container').innerHTML);
                 localStorage.setItem('vb_profileFeed', document.getElementById('profile-posts-container').innerHTML);
             } catch (e) {
-                console.warn("Yaddaş limiti dolmuş ola bilər.");
+                console.warn("Yaddaş limiti dolmuş ola bilər. Şəkillər çox böyükdür.");
             }
         }
 
@@ -628,11 +633,35 @@
             else if(type === 'forgot') { document.getElementById('auth-title').innerText = "Parolun Bərpası"; document.getElementById('forgot-form').style.display = 'block'; }
         }
 
+        // YENİ ƏLAVƏ: LOGIN YOXLANIŞI
+        function processLogin() {
+            let uInp = document.getElementById('login-username').value.trim();
+            let pInp = document.getElementById('login-password').value;
+            let users = JSON.parse(localStorage.getItem('vb_users') || "{}");
+
+            if(!uInp || !pInp) {
+                alert("İstifadəçi adı və parolu daxil edin.");
+                return;
+            }
+
+            if(users[uInp] && users[uInp].password === pInp) {
+                localStorage.setItem('vb_username', uInp);
+                localStorage.setItem('vb_fullname', users[uInp].fullname);
+                if(users[uInp].avatar) {
+                    localStorage.setItem('vb_avatar', users[uInp].avatar);
+                } else {
+                    localStorage.removeItem('vb_avatar'); // Köhnə istifadəçinin avatarını təmizlə
+                }
+                loginSuccess();
+            } else {
+                alert("İstifadəçi adı və ya parol yanlışdır! Qeydiyyatdan keçməmisinizsə, əvvəlcə qeydiyyatdan keçin.");
+            }
+        }
+
         function loginSuccess() {
             localStorage.setItem('vb_LoggedIn', 'true');
-            document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('main-section').style.display = 'flex';
-            window.scrollTo(0,0);
+            // Səhifəni yeniləyirik ki, məlumatlar (ad, avatar) DOMContentLoaded vasitəsilə təmiz yüklənsin
+            location.reload(); 
         }
 
         function logoutApp() {
@@ -647,14 +676,18 @@
             toggleAuth('login');
         }
 
+        // YENİ ƏLAVƏ: QEYDİYYAT YADDAŞI
         function validateRegistration() {
             const errorMsg = document.getElementById('reg-error');
             errorMsg.style.display = 'none';
+
+            const fullname = document.getElementById('reg-name').value.trim();
+            const username = document.getElementById('reg-username').value.trim();
             const dob = document.getElementById('reg-dob').value;
             const pass = document.getElementById('reg-password').value;
             const passConf = document.getElementById('reg-password-confirm').value;
 
-            if (!dob) { showError("Doğum tarixini qeyd edin."); return; }
+            if (!fullname || !username || !dob || !pass) { showError("Bütün xanaları doldurun."); return; }
             if (pass !== passConf) { showError("Parollar uyğun gəlmir!"); return; }
 
             const today = new Date(), birthDate = new Date(dob);
@@ -663,6 +696,22 @@
             if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) { age--; }
 
             if (age < 18) { showError("Qeydiyyatdan keçmək üçün 18 yaşınız tamam olmalıdır."); return; }
+
+            // LocalStorage Bazasına Qeydiyyat
+            let users = JSON.parse(localStorage.getItem('vb_users') || "{}");
+            if (users[username]) {
+                showError("Bu istifadəçi adı artıq mövcuddur. Başqasını seçin.");
+                return;
+            }
+
+            users[username] = { fullname: fullname, password: pass, avatar: null };
+            localStorage.setItem('vb_users', JSON.stringify(users));
+
+            // Mövcud sessiyanı təyin et
+            localStorage.setItem('vb_username', username);
+            localStorage.setItem('vb_fullname', fullname);
+            localStorage.removeItem('vb_avatar'); 
+
             loginSuccess();
         }
 
@@ -742,18 +791,30 @@
                 if(translations[key]) el.innerText = translations[key];
             });
 
-            let newName = document.getElementById('settings-fullname').value;
-            let newUsername = document.getElementById('settings-username').value;
+            // TƏKMİLLƏŞDİRİLDİ: İstifadəçi məlumatları (Local Database) sinxronizasiyası
+            let newName = document.getElementById('settings-fullname').value.trim();
+            let newUsername = document.getElementById('settings-username').value.trim();
+            let currentUser = localStorage.getItem('vb_username');
+            let users = JSON.parse(localStorage.getItem('vb_users') || "{}");
             
+            if(newUsername && newUsername !== currentUser) {
+                if(users[newUsername]) {
+                    alert("Bu istifadəçi adı artıq tutulub!");
+                    return;
+                }
+                users[newUsername] = users[currentUser]; 
+                delete users[currentUser]; 
+                localStorage.setItem('vb_username', newUsername);
+                document.getElementById('profile-username').innerText = newUsername;
+                currentUser = newUsername;
+            }
             if(newName) {
                 document.getElementById('profile-fullname').innerText = newName;
                 localStorage.setItem('vb_fullname', newName);
-            }
-            if(newUsername) {
-                document.getElementById('profile-username').innerText = newUsername;
-                localStorage.setItem('vb_username', newUsername);
+                if(users[currentUser]) users[currentUser].fullname = newName;
             }
 
+            localStorage.setItem('vb_users', JSON.stringify(users));
             alert("Ayarlar yadda saxlanıldı!");
         }
 
@@ -769,6 +830,16 @@
                     document.getElementById('profile-main-avatar').innerHTML = imgTag;
                     document.getElementById('nav-profile-avatar').innerHTML = imgTag;
                     localStorage.setItem('vb_avatar', base64); 
+
+                    // Bazadakı obyekti də yenilə
+                    let currentUser = localStorage.getItem('vb_username');
+                    if(currentUser) {
+                        let users = JSON.parse(localStorage.getItem('vb_users') || "{}");
+                        if(users[currentUser]) {
+                            users[currentUser].avatar = base64;
+                            localStorage.setItem('vb_users', JSON.stringify(users));
+                        }
+                    }
                 });
             }
             input.value = '';
