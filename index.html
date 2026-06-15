@@ -73,6 +73,7 @@
         .status-dot.online { background-color: #28a745; }
         .status-dot.offline { background-color: #6c757d; }
         .premium-badge { color: var(--premium-color); margin-left: 5px; font-size: 14px; }
+        .empty-state { text-align: center; color: #666; font-size: 13px; padding: 10px 0;}
 
         /* Paylaşım & Feed */
         .post-creator textarea { width: 100%; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; box-sizing: border-box; background: var(--bg-color); color: var(--text-color); resize: none; height: 60px; margin-bottom: 10px; font-family: inherit;}
@@ -147,9 +148,6 @@
 </head>
 <body>
 
-    <!-- ==========================================
-         1. GİRİŞ VƏ QEYDİYYAT
-    =========================================== -->
     <div id="auth-section" class="auth-container" style="display: none;">
         <div class="auth-box">
             <div style="text-align: center; margin-bottom: 10px;">
@@ -199,9 +197,6 @@
         <div class="site-footer">© Sayt Elman Hüseynov tərəfindən yaradılmışdır. Bütün hüquqlar qorunur</div>
     </div>
 
-    <!-- ==========================================
-         2. ƏSAS EKRAN
-    =========================================== -->
     <div id="main-section" style="display: none; flex: 1; display: flex; flex-direction: column;">
         
         <nav class="navbar">
@@ -254,20 +249,15 @@
 
         <div class="content-wrapper">
             
-            <!-- Sol Panel -->
             <aside class="left-panel">
                 <h3 style="margin-top:0;" data-i18n="panel_online">Hal-hazırda online</h3>
-                <ul class="user-list">
-                    <li onclick="openChat('@ayten_90', '#ff4b4b', 'A')"><div class="avatar-round" style="background:#ff4b4b;">A</div><span>@ayten_90</span> <i class="fas fa-envelope msg-icon"></i></li>
-                    <li onclick="openChat('@ramiz_b', '#1da1f2', 'R')"><div class="avatar-round" style="background:#1da1f2;">R</div><span>@ramiz_b <i class="fas fa-check-circle premium-badge"></i></span> <i class="fas fa-envelope msg-icon"></i></li>
-                    <li onclick="openChat('@leyla_art', '#28a745', 'L')"><div class="avatar-round" style="background:#28a745;">L</div><span>@leyla_art</span> <i class="fas fa-envelope msg-icon"></i></li>
+                <ul class="user-list" id="online-users-list">
+                    <p class="empty-state">Onlayn istifadəçi yoxdur.</p>
                 </ul>
             </aside>
 
-            <!-- MƏRKƏZİ PANEL -->
             <main class="center-panel">
                 
-                <!-- 1. Ana Səhifə (News Feed) -->
                 <div id="view-feed" class="view-section active-view">
                     <div class="box-panel post-creator">
                         <textarea id="feed-text" placeholder="Yeni nəsə var? Və ya bir foto paylaş..."></textarea>
@@ -288,72 +278,29 @@
                     </div>
                     
                     <div id="feed-container">
-                        <div class="box-panel post">
-                            <div class="post-header">
-                                <div class="avatar-round" style="background:#6c757d;">N</div>
-                                <div><strong>Natavan Məmmədova</strong> (@natavan_m)<br><span style="font-size:12px; color:#666;">2 saat əvvəl</span></div>
-                            </div>
-                            <div class="post-content"><p>Hər kəsə salam! Mən bu platformada yeniyəm.</p></div>
-                            <div class="post-actions">
-                                <span onclick="toggleLike(this)"><i class="fas fa-thumbs-up"></i> Bəyən (<span>12</span>)</span>
-                                <span onclick="repostPost(this)"><i class="fas fa-retweet"></i> Repost</span>
-                                <span onclick="alert('Link kopyalandı!')"><i class="fas fa-share"></i> Paylaş</span>
-                            </div>
-                        </div>
+                        <p class="empty-state">Hələ ki heç bir paylaşım yoxdur.</p>
                     </div>
                 </div>
 
-                <!-- 2. Tanışlıq -->
                 <div id="view-dating" class="view-section">
                     <div class="box-panel">
                         <h3 style="margin-top: 0;" data-i18n="title_dating">Tanışlığa Açıq İstifadəçilər</h3>
-                        <div class="dating-grid">
-                            <div class="dating-card" id="dc-1">
-                                <div class="avatar-round" style="background:#9b59b6;">S</div>
-                                <strong>@sevda_88</strong>
-                                <p style="font-size: 14px; color:#666;">Yeni insanlarla tanış olmağı sevirəm.</p>
-                                <div class="dating-actions">
-                                    <button class="btn-like" onclick="datingAction('dc-1', 'like')"><i class="fas fa-heart"></i></button>
-                                    <button class="btn-dislike" onclick="datingAction('dc-1', 'dislike')"><i class="fas fa-times"></i></button>
-                                </div>
-                            </div>
-                            <div class="dating-card" id="dc-2">
-                                <div class="avatar-round" style="background:#e67e22;">E</div>
-                                <strong>@elnur_k <i class="fas fa-check-circle premium-badge"></i></strong>
-                                <p style="font-size: 14px; color:#666;">Ciddi münasibət axtarıram.</p>
-                                <div class="dating-actions">
-                                    <button class="btn-like" onclick="datingAction('dc-2', 'like')"><i class="fas fa-heart"></i></button>
-                                    <button class="btn-dislike" onclick="datingAction('dc-2', 'dislike')"><i class="fas fa-times"></i></button>
-                                </div>
-                            </div>
+                        <div class="dating-grid" id="dating-container">
+                            <p class="empty-state" style="grid-column: span 2;">Tanışlığa açıq istifadəçi tapılmadı.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. Videosöhbət -->
                 <div id="view-video" class="view-section">
                     <div class="box-panel">
                         <h3 style="margin-top:0;" data-i18n="title_video">Videosöhbətə Açıq İstifadəçilər</h3>
                         <p style="color:#666; font-size:14px;">Qeyd: Zəng etmək yalnız Premium istifadəçilər üçündür.</p>
-                        
-                        <div class="video-user">
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="avatar-round" style="background:#1da1f2;">T</div>
-                                <strong>@tural_dev <i class="fas fa-check-circle premium-badge"></i></strong>
-                            </div>
-                            <button class="btn btn-premium" style="width: auto;" onclick="initiateVideoCall()"><i class="fas fa-video"></i> Zəng et</button>
-                        </div>
-                        <div class="video-user">
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="avatar-round" style="background:#f1c40f;">N</div>
-                                <strong>@nermin_baku</strong>
-                            </div>
-                            <button class="btn btn-premium" style="width: auto;" onclick="initiateVideoCall()"><i class="fas fa-video"></i> Zəng et</button>
+                        <div id="video-container">
+                            <p class="empty-state">Hazırda videosöhbətə açıq heç kim yoxdur.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- 4. Ayarlar -->
                 <div id="view-settings" class="view-section">
                     <div class="box-panel">
                         <h3 style="margin-top: 0;" data-i18n="nav_settings">Tənzimləmələr</h3>
@@ -410,7 +357,6 @@
                     </div>
                 </div>
 
-                <!-- 5. İstifadəçi Axtarışı -->
                 <div id="view-search" class="view-section">
                     <div class="box-panel">
                         <div class="search-bar">
@@ -423,7 +369,6 @@
                     </div>
                 </div>
 
-                <!-- 6. Premium Ol -->
                 <div id="view-premium" class="view-section">
                     <div class="box-panel" style="text-align: center;">
                         <i class="fas fa-crown" style="font-size: 60px; color: #f1c40f; margin-bottom: 20px;"></i>
@@ -437,15 +382,11 @@
                     </div>
                 </div>
 
-                <!-- 7. Mesaj Qutusu -->
                 <div id="view-messages" class="view-section">
                     <div class="chat-container">
                         <div class="chat-sidebar">
                             <ul class="user-list" id="chat-sidebar-list">
-                                <li onclick="openChat('@ayten_90', '#ff4b4b', 'A')"><div class="avatar-small" style="background:#ff4b4b;">A</div> <strong>@ayten_90</strong></li>
-                                <li onclick="openChat('@ramiz_b', '#1da1f2', 'R')"><div class="avatar-small" style="background:#1da1f2;">R</div> <strong>@ramiz_b</strong></li>
-                                <li onclick="openChat('@sevda_88', '#9b59b6', 'S')"><div class="avatar-small" style="background:#9b59b6;">S</div> <strong>@sevda_88</strong></li>
-                                <li onclick="openChat('@elnur_k', '#e67e22', 'E')"><div class="avatar-small" style="background:#e67e22;">E</div> <strong>@elnur_k</strong></li>
+                                <p class="empty-state">Mesajınız yoxdur.</p>
                             </ul>
                         </div>
                         
@@ -460,7 +401,6 @@
                                     <span id="active-chat-name" style="margin-left: 10px;"></span>
                                 </div>
                                 
-                                <!-- YENİ ƏLAVƏ: Çatı silmək üçün ikona və menyu -->
                                 <div style="position:relative;">
                                     <i class="fas fa-trash-alt" style="cursor:pointer; color:#ff4b4b; font-size:16px;" onclick="toggleChatDeleteMenu()" title="Çatı sil"></i>
                                     <div id="chat-delete-menu" style="display:none; position:absolute; right:0; top:25px; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1); width:180px; z-index:100; flex-direction:column; overflow:hidden;">
@@ -494,7 +434,6 @@
                     </div>
                 </div>
 
-                <!-- 8. Mənim Profilim -->
                 <div id="view-profile" class="view-section">
                     <div class="box-panel">
                         <div class="profile-header">
@@ -529,7 +468,6 @@
                     </div>
                 </div>
 
-                <!-- 9. Başqasının Profili -->
                 <div id="view-external-profile" class="view-section">
                     <div class="box-panel">
                         <button class="btn" style="width:auto; margin-bottom:15px; background:var(--bg-color); color:var(--text-color); border:1px solid var(--border-color);" onclick="switchView('messages')"><i class="fas fa-arrow-left"></i> Geri Qayıt</button>
@@ -544,44 +482,21 @@
                     <div id="ext-profile-content"></div>
                 </div>
 
-                <!-- 10. Bildirişlər Səhifəsi -->
                 <div id="view-notifications" class="view-section">
                     <div class="box-panel">
                         <h3 style="margin-top: 0;" data-i18n="notif_title">Bildirişlər</h3>
                         <ul class="user-list" id="notifications-list">
-                            <li onclick="readNotification(this, 'Elnur (@elnur_k)', 'yeni bir foto paylaşdı! İndi baxın.')">
-                                <div class="avatar-round" style="background:#e67e22;">E</div>
-                                <div>
-                                    <strong>@elnur_k</strong> yeni paylaşım etdi.<br>
-                                    <span style="font-size: 12px; color: #666;">10 dəqiqə əvvəl</span>
-                                </div>
-                            </li>
-                            <li onclick="readNotification(this, 'Sevda (@sevda_88)', 'sizin sonuncu paylaşımınızı bəyəndi!')">
-                                <div class="avatar-round" style="background:#9b59b6;">S</div>
-                                <div>
-                                    <strong>@sevda_88</strong> postunuzu bəyəndi.<br>
-                                    <span style="font-size: 12px; color: #666;">1 saat əvvəl</span>
-                                </div>
-                            </li>
-                            <li onclick="readNotification(this, 'Aytən (@ayten_90)', 'sizə izləmə istəyi göndərdi.')">
-                                <div class="avatar-round" style="background:#ff4b4b;">A</div>
-                                <div>
-                                    <strong>@ayten_90</strong> sizi izləmək istəyir.<br>
-                                    <span style="font-size: 12px; color: #666;">Dünən</span>
-                                </div>
-                            </li>
+                            <p class="empty-state">Yeni bildiriş yoxdur.</p>
                         </ul>
                     </div>
                 </div>
 
             </main>
 
-            <!-- Sağ Panel -->
             <aside class="right-panel">
                 <h3 style="margin-top:0;" data-i18n="panel_following">İzlədiklərim</h3>
-                <ul class="user-list">
-                    <li onclick="openChat('@elnur_k', '#e67e22', 'E')"><div class="avatar-container"><div class="avatar-round" style="background:#e67e22;">E</div><div class="status-dot online"></div></div><span>@elnur_k</span> <i class="fas fa-envelope msg-icon"></i></li>
-                    <li onclick="openChat('@sevda_88', '#9b59b6', 'S')"><div class="avatar-container"><div class="avatar-round" style="background:#9b59b6;">S</div><div class="status-dot offline"></div></div><span>@sevda_88</span> <i class="fas fa-envelope msg-icon"></i></li>
+                <ul class="user-list" id="following-users-list">
+                    <p class="empty-state">İzlədiyiniz istifadəçi yoxdur.</p>
                 </ul>
             </aside>
 
@@ -590,17 +505,11 @@
         <div class="site-footer">© Sayt Elman Hüseynov tərəfindən yaradılmışdır. Bütün hüquqlar qorunur</div>
     </div>
 
-    <!-- ==========================================
-         JAVASCRIPT FUNKSİYALARI
-    =========================================== -->
     <script>
         let isPremiumUser = false;
         let imagesSentToday = 0;
         let currentChatUser = null;
 
-        // =========================================================================
-        // 🛠️ YERLİ WEBM STİKERLƏRİNİ BURA ƏLAVƏ ET
-        // =========================================================================
         const customStickers = [
             "stikerler/1.webm", "stikerler/2.webm", "stikerler/3.webm", "stikerler/4.webm", "stikerler/5.webm",
             "stikerler/6.webm", "stikerler/7.webm", "stikerler/8.webm", "stikerler/9.webm", "stikerler/10.webm",
@@ -619,7 +528,6 @@
 
             customStickers.forEach(src => {
                 if(src.endsWith('.webm')) {
-                    // YENİ MƏNTİQ (Limitsiz Decoder üçün): #t=0.001 ilə yalnız ilk kadrı (şəkli) yükləyirik. Mausu gətirdikdə oynayır.
                     resultsDiv.innerHTML += `
                         <video src="${src}#t=0.001"
                                preload="metadata" loop muted playsinline
@@ -631,19 +539,15 @@
                     resultsDiv.innerHTML += `<img src="${src}" onclick="sendSticker('${src}')" style="width: 100%; height: 60px; object-fit: contain; cursor: pointer; transition: 0.2s; border-radius: 4px;">`;
                 }
             });
-        }
-        // =========================================================================
 
-        const mockUsers = [
-            {username: '@ayten_90', name: 'Aytən', color: '#ff4b4b', letter: 'A'},
-            {username: '@ramiz_b', name: 'Ramiz', color: '#1da1f2', letter: 'R', premium: true},
-            {username: '@leyla_art', name: 'Leyla', color: '#28a745', letter: 'L'},
-            {username: '@sevda_88', name: 'Sevda', color: '#9b59b6', letter: 'S'},
-            {username: '@elnur_k', name: 'Elnur', color: '#e67e22', letter: 'E', premium: true},
-            {username: '@tural_dev', name: 'Tural', color: '#1da1f2', letter: 'T', premium: true},
-            {username: '@nermin_baku', name: 'Nərmin', color: '#f1c40f', letter: 'N'},
-            {username: '@natavan_m', name: 'Natavan Məmmədova', color: '#6c757d', letter: 'N'}
-        ];
+            setTimeout(() => {
+                document.querySelectorAll('#sticker-results video').forEach(v => {
+                    v.currentTime = 0.1;
+                });
+            }, 300);
+        }
+
+        const mockUsers = []; // TƏMİZLƏNDİ - Gələcəkdə bazadan çəkiləcək
 
         document.addEventListener("DOMContentLoaded", () => {
             if(localStorage.getItem('vb_LoggedIn') === 'true') {
@@ -679,7 +583,6 @@
             if(savedProfileFeed) document.getElementById('profile-posts-container').innerHTML = savedProfileFeed;
         });
 
-        // YENİ ƏLAVƏ: Şəkli yaddaşda saxlamazdan əvvəl sıxışdırmaq üçün funksiya (Limit dolmasın deyə)
         function compressImage(file, callback) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -688,7 +591,7 @@
                 img.src = event.target.result;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800; // Maksimum genişlik
+                    const MAX_WIDTH = 800; 
                     let width = img.width;
                     let height = img.height;
 
@@ -700,7 +603,7 @@
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    callback(canvas.toDataURL('image/jpeg', 0.7)); // 70% keyfiyyətdə saxla
+                    callback(canvas.toDataURL('image/jpeg', 0.7)); 
                 }
             }
         }
@@ -798,14 +701,14 @@
             let query = document.getElementById('search-input').value.toLowerCase().trim();
             let resultsDiv = document.getElementById('search-results');
             if(!query) {
-                resultsDiv.innerHTML = '<p style="color: #666; text-align: center;">Axtarış üçün nəsə yazın.</p>';
+                resultsDiv.innerHTML = '<p class="empty-state">Axtarış üçün nəsə yazın.</p>';
                 return;
             }
 
             let filtered = mockUsers.filter(u => u.username.toLowerCase().includes(query) || u.name.toLowerCase().includes(query));
             
             if(filtered.length === 0) {
-                resultsDiv.innerHTML = '<p style="color: #666; text-align: center;">İstifadəçi tapılmadı.</p>';
+                resultsDiv.innerHTML = '<p class="empty-state">İstifadəçi tapılmadı.</p>';
                 return;
             }
 
@@ -905,6 +808,12 @@
             let username = document.getElementById('profile-username').innerText;
             let fullname = document.getElementById('profile-fullname').innerText;
 
+            let feedContainer = document.getElementById('feed-container');
+            let profileContainer = document.getElementById('profile-posts-container');
+            
+            if(feedContainer.innerHTML.includes("Hələ ki heç bir paylaşım yoxdur")) feedContainer.innerHTML = '';
+            if(profileContainer.innerHTML.includes("Hələ ki heç bir paylaşım etməmisiniz")) profileContainer.innerHTML = '';
+
             let postHtml = `
                 <div class="box-panel post" style="animation: fadeIn 0.5s;">
                     <div class="post-header"><div class="avatar-round" style="background:var(--primary-color);">${userAvatar}</div><div><strong>${fullname}</strong> (@${username})<br><span style="font-size:12px; color:#666;">İndi</span></div></div>
@@ -920,10 +829,7 @@
                     </div>
                 </div>`;
 
-            document.getElementById('feed-container').insertAdjacentHTML('afterbegin', postHtml);
-            
-            let profileContainer = document.getElementById('profile-posts-container');
-            if(profileContainer.innerHTML.includes("Hələ ki heç bir paylaşım etməmisiniz")) profileContainer.innerHTML = '';
+            feedContainer.insertAdjacentHTML('afterbegin', postHtml);
             profileContainer.insertAdjacentHTML('afterbegin', postHtml);
 
             document.getElementById(textId).value = '';
@@ -949,6 +855,12 @@
             let postContent = postEl.querySelector('.post-content').innerHTML;
             let postHeader = postEl.querySelector('.post-header').innerHTML;
             
+            let profileContainer = document.getElementById('profile-posts-container');
+            let feedContainer = document.getElementById('feed-container');
+
+            if(feedContainer.innerHTML.includes("Hələ ki heç bir paylaşım yoxdur")) feedContainer.innerHTML = '';
+            if(profileContainer.innerHTML.includes("Hələ ki heç bir paylaşım etməmisiniz")) profileContainer.innerHTML = '';
+
             let newPostHtml = `
                 <div class="box-panel post" style="animation: fadeIn 0.5s;">
                     <div style="font-size:12px; color:var(--primary-color); margin-bottom:10px;"><i class="fas fa-retweet"></i> Siz repost etdiniz</div>
@@ -960,11 +872,7 @@
                     </div>
                 </div>`;
                 
-            let profileContainer = document.getElementById('profile-posts-container');
-            if(profileContainer.innerHTML.includes("Hələ ki heç bir paylaşım etməmisiniz")) profileContainer.innerHTML = '';
             profileContainer.insertAdjacentHTML('afterbegin', newPostHtml);
-
-            let feedContainer = document.getElementById('feed-container');
             feedContainer.insertAdjacentHTML('afterbegin', newPostHtml);
             
             btn.style.color = 'var(--primary-color)';
@@ -1024,7 +932,6 @@
             document.getElementById('chat-delete-menu').style.display = 'none';
         }
 
-        // YENİ ƏLAVƏ: Çat Silmək Üçün Funksiyalar
         function toggleChatDeleteMenu() {
             let menu = document.getElementById('chat-delete-menu');
             menu.style.display = menu.style.display === 'none' || menu.style.display === '' ? 'flex' : 'none';
@@ -1170,6 +1077,26 @@
             historyBox.scrollTop = historyBox.scrollHeight; 
         }
 
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyDkJP49x48nEMPUoYWi1i_y2PelWVR0J1E",
+            authDomain: "vibematch-d349d.firebaseapp.com",
+            projectId: "vibematch-d349d",
+            storageBucket: "vibematch-d349d.firebasestorage.app",
+            messagingSenderId: "442239406806",
+            appId: "1:442239406806:web:d278aaa6f532051bb22f77",
+            measurementId: "G-Z8F3RF48X1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        
+        console.log("Firebase uğurla qoşuldu!");
     </script>
 </body>
 </html>
