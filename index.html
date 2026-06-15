@@ -148,6 +148,9 @@
 </head>
 <body>
 
+    <!-- ==========================================
+         1. GİRİŞ VƏ QEYDİYYAT
+    =========================================== -->
     <div id="auth-section" class="auth-container" style="display: none;">
         <div class="auth-box">
             <div style="text-align: center; margin-bottom: 10px;">
@@ -197,6 +200,9 @@
         <div class="site-footer">© Sayt Elman Hüseynov tərəfindən yaradılmışdır. Bütün hüquqlar qorunur</div>
     </div>
 
+    <!-- ==========================================
+         2. ƏSAS EKRAN
+    =========================================== -->
     <div id="main-section" style="display: none; flex: 1; display: flex; flex-direction: column;">
         
         <nav class="navbar">
@@ -249,6 +255,7 @@
 
         <div class="content-wrapper">
             
+            <!-- Sol Panel -->
             <aside class="left-panel">
                 <h3 style="margin-top:0;" data-i18n="panel_online">Hal-hazırda online</h3>
                 <ul class="user-list" id="online-users-list">
@@ -256,8 +263,10 @@
                 </ul>
             </aside>
 
+            <!-- MƏRKƏZİ PANEL -->
             <main class="center-panel">
                 
+                <!-- 1. Ana Səhifə (News Feed) -->
                 <div id="view-feed" class="view-section active-view">
                     <div class="box-panel post-creator">
                         <textarea id="feed-text" placeholder="Yeni nəsə var? Və ya bir foto paylaş..."></textarea>
@@ -282,6 +291,7 @@
                     </div>
                 </div>
 
+                <!-- 2. Tanışlıq -->
                 <div id="view-dating" class="view-section">
                     <div class="box-panel">
                         <h3 style="margin-top: 0;" data-i18n="title_dating">Tanışlığa Açıq İstifadəçilər</h3>
@@ -291,6 +301,7 @@
                     </div>
                 </div>
 
+                <!-- 3. Videosöhbət -->
                 <div id="view-video" class="view-section">
                     <div class="box-panel">
                         <h3 style="margin-top:0;" data-i18n="title_video">Videosöhbətə Açıq İstifadəçilər</h3>
@@ -301,6 +312,7 @@
                     </div>
                 </div>
 
+                <!-- 4. Ayarlar -->
                 <div id="view-settings" class="view-section">
                     <div class="box-panel">
                         <h3 style="margin-top: 0;" data-i18n="nav_settings">Tənzimləmələr</h3>
@@ -357,6 +369,7 @@
                     </div>
                 </div>
 
+                <!-- 5. İstifadəçi Axtarışı -->
                 <div id="view-search" class="view-section">
                     <div class="box-panel">
                         <div class="search-bar">
@@ -369,6 +382,7 @@
                     </div>
                 </div>
 
+                <!-- 6. Premium Ol -->
                 <div id="view-premium" class="view-section">
                     <div class="box-panel" style="text-align: center;">
                         <i class="fas fa-crown" style="font-size: 60px; color: #f1c40f; margin-bottom: 20px;"></i>
@@ -382,6 +396,7 @@
                     </div>
                 </div>
 
+                <!-- 7. Mesaj Qutusu -->
                 <div id="view-messages" class="view-section">
                     <div class="chat-container">
                         <div class="chat-sidebar">
@@ -434,6 +449,7 @@
                     </div>
                 </div>
 
+                <!-- 8. Mənim Profilim -->
                 <div id="view-profile" class="view-section">
                     <div class="box-panel">
                         <div class="profile-header">
@@ -468,20 +484,27 @@
                     </div>
                 </div>
 
+                <!-- 9. Başqasının Profili (YENİLƏNMİŞ) -->
                 <div id="view-external-profile" class="view-section">
                     <div class="box-panel">
-                        <button class="btn" style="width:auto; margin-bottom:15px; background:var(--bg-color); color:var(--text-color); border:1px solid var(--border-color);" onclick="switchView('messages')"><i class="fas fa-arrow-left"></i> Geri Qayıt</button>
+                        <button class="btn" style="width:auto; margin-bottom:15px; background:var(--bg-color); color:var(--text-color); border:1px solid var(--border-color);" onclick="switchView('search')"><i class="fas fa-arrow-left"></i> Geri Qayıt</button>
+                        
                         <div class="profile-header">
                             <div class="avatar-round" style="width: 100px; height: 100px; font-size: 40px;" id="ext-profile-avatar">U</div>
                             <div>
-                                <h2 style="margin: 0;"><span id="ext-profile-fullname">İstifadəçi</span></h2>
+                                <h2 style="margin: 0; display: flex; align-items: center; gap: 15px;">
+                                    <span id="ext-profile-fullname">İstifadəçi</span>
+                                    <i class="fas fa-envelope" style="cursor: pointer; color: var(--primary-color); font-size: 22px;" id="ext-profile-msg-btn" title="Mesaj yaz"></i>
+                                </h2>
                                 <p style="margin: 5px 0; color: var(--primary-color);" id="ext-profile-username">@username</p>
+                                <button id="ext-profile-follow-btn" class="btn" style="width: auto; padding: 5px 20px; font-size: 14px; margin-top: 5px;">İzlə</button>
                             </div>
                         </div>
                     </div>
                     <div id="ext-profile-content"></div>
                 </div>
 
+                <!-- 10. Bildirişlər Səhifəsi -->
                 <div id="view-notifications" class="view-section">
                     <div class="box-panel">
                         <h3 style="margin-top: 0;" data-i18n="notif_title">Bildirişlər</h3>
@@ -493,6 +516,7 @@
 
             </main>
 
+            <!-- Sağ Panel -->
             <aside class="right-panel">
                 <h3 style="margin-top:0;" data-i18n="panel_following">İzlədiklərim</h3>
                 <ul class="user-list" id="following-users-list">
@@ -505,6 +529,9 @@
         <div class="site-footer">© Sayt Elman Hüseynov tərəfindən yaradılmışdır. Bütün hüquqlar qorunur</div>
     </div>
 
+    <!-- ==========================================
+         JAVASCRIPT FUNKSİYALARI
+    =========================================== -->
     <script>
         let isPremiumUser = false;
         let imagesSentToday = 0;
@@ -546,6 +573,8 @@
                 });
             }, 300);
         }
+
+        const mockUsers = []; 
 
         document.addEventListener("DOMContentLoaded", () => {
             if(!localStorage.getItem('vb_users')) {
@@ -738,7 +767,6 @@
             alert("Bildiriş məzmunu: " + user + " " + action);
         }
 
-        // YENİLƏNMİŞ: AXTARIŞ SİSTEMİ (Yerli bazadan çəkir)
         function executeSearch() {
             let query = document.getElementById('search-input').value.toLowerCase().trim();
             let resultsDiv = document.getElementById('search-results');
@@ -1027,18 +1055,25 @@
             currentChatUser = null;
         }
 
-        function sendFollowRequest(username) {
-            let cleanId = username.replace('@', '');
-            let btn = document.getElementById('follow-btn-' + cleanId);
+        // YENİ ƏLAVƏ: İzləmə İstəyi Funksiyası
+        function sendFollowRequest(username, btn) {
             if(btn) {
                 btn.innerText = 'İstək göndərildi';
                 btn.style.backgroundColor = '#6c757d';
                 btn.disabled = true;
+            } else {
+                let cleanId = username.replace('@', '');
+                let oldBtn = document.getElementById('follow-btn-' + cleanId);
+                if(oldBtn) {
+                    oldBtn.innerText = 'İstək göndərildi';
+                    oldBtn.style.backgroundColor = '#6c757d';
+                    oldBtn.disabled = true;
+                }
             }
-            alert(username + " adlı istifadəçiyə izləmə istəyiniz (bildiriş) göndərildi!");
+            alert(username + " adlı istifadəçiyə izləmə istəyiniz (bildiriş) göndərildi! Təsdiqləndikdən sonra profil məlumatlarını görə biləcəksiniz.");
         }
 
-        // YENİLƏNMİŞ: Başqasının profili məlumatlarını yaddaşdan oxuyur
+        // YENİ ƏLAVƏ: Profilin tərtibatı (Məktub və İzlə düymələri ilə)
         function openExternalProfile(username, color, letter) {
             switchView('external-profile');
             document.getElementById('ext-profile-username').innerText = username;
@@ -1048,24 +1083,44 @@
             
             let fullName = users[cleanUsername] ? users[cleanUsername].fullname : cleanUsername.toUpperCase();
             
+            // Header-in yenidən qurulması (Mesaj və İzlə düymələri daxil)
             document.getElementById('ext-profile-fullname').innerText = fullName; 
             document.getElementById('ext-profile-avatar').style.background = color;
             document.getElementById('ext-profile-avatar').innerText = letter;
 
+            let msgBtn = document.getElementById('ext-profile-msg-btn');
+            msgBtn.onclick = function() { openChat(username, color, letter); };
+
+            let followBtn = document.getElementById('ext-profile-follow-btn');
+            followBtn.innerText = 'İzlə';
+            followBtn.style.backgroundColor = 'var(--primary-color)';
+            followBtn.disabled = false;
+            followBtn.onclick = function() { sendFollowRequest(username, this); };
+
             let contentBox = document.getElementById('ext-profile-content');
             
-            contentBox.innerHTML = `
-                <div class="box-panel post">
-                    <div class="post-header">
-                        <div class="avatar-round" style="background:${color};">${letter}</div>
-                        <div><strong>${fullName}</strong> (${username})<br><span style="font-size:12px; color:#666;">Yaxınlarda</span></div>
-                    </div>
-                    <div class="post-content"><p>Salam! Mənim profilim hər kəsə açıqdır. Gəlin tanış olaq!</p></div>
-                    <div class="post-actions">
-                        <span onclick="toggleLike(this)"><i class="fas fa-thumbs-up"></i> Bəyən (<span>0</span>)</span>
-                        <span onclick="repostPost(this)"><i class="fas fa-retweet"></i> Repost</span>
-                    </div>
-                </div>`;
+            // Gizli profil simulyasiyası (Test üçün 2 adda qurulub, gələcəkdə bazadan 'isPrivate' ilə oxunacaq)
+            if(username === '@ramiz_b' || username === '@sevda_88') {
+                contentBox.innerHTML = `
+                    <div class="box-panel" style="text-align:center; padding: 40px 20px;">
+                        <i class="fas fa-lock" style="font-size: 50px; color:#666; margin-bottom:15px;"></i>
+                        <h3 style="margin-top:0;">Bu profil bağlıdır</h3>
+                        <p style="color:#666;">Yalnız izləyicilər bu istifadəçinin paylaşımlarını görə bilər.</p>
+                    </div>`;
+            } else {
+                contentBox.innerHTML = `
+                    <div class="box-panel post">
+                        <div class="post-header">
+                            <div class="avatar-round" style="background:${color};">${letter}</div>
+                            <div><strong>${fullName}</strong> (${username})<br><span style="font-size:12px; color:#666;">Yaxınlarda</span></div>
+                        </div>
+                        <div class="post-content"><p>Salam! Mənim profilim hər kəsə açıqdır. Gəlin tanış olaq!</p></div>
+                        <div class="post-actions">
+                            <span onclick="toggleLike(this)"><i class="fas fa-thumbs-up"></i> Bəyən (<span>5</span>)</span>
+                            <span onclick="repostPost(this)"><i class="fas fa-retweet"></i> Repost</span>
+                        </div>
+                    </div>`;
+            }
         }
 
         function sendTextMsg() {
@@ -1147,6 +1202,9 @@
 
     </script>
 
+    <!-- ==========================================
+         FİREBASE QOŞULMA HİSSƏSİ
+    =========================================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
