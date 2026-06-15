@@ -156,7 +156,7 @@
             <h2 id="auth-title">Sayta Giriş</h2>
             
             <div id="login-form">
-                <input type="text" id="login-username" placeholder="İstifadəçi adı" required>
+                <input type="text" id="login-username" placeholder="İstifadəçi adı (məs: user123)" required>
                 <input type="password" id="login-password" placeholder="Parol" required>
                 <button type="button" class="btn" onclick="processLogin()">Daxil ol</button>
                 <div class="auth-links" style="margin-top: 10px;">
@@ -168,7 +168,7 @@
             <div id="register-form" style="display: none;">
                 <input type="text" id="reg-name" placeholder="Ad və Soyad" required>
                 <input type="email" id="reg-email" placeholder="E-mail ünvanı" required>
-                <input type="text" id="reg-username" placeholder="İstifadəçi adı" required>
+                <input type="text" id="reg-username" placeholder="İstifadəçi adı (boşluqsuz)" required>
                 <label style="font-size: 12px; color: #666;">Doğum tarixi:</label>
                 <input type="date" id="reg-dob" required>
                 <select id="reg-gender" required>
@@ -439,8 +439,9 @@
                         <div class="profile-header">
                             <div class="avatar-round" style="width: 100px; height: 100px; font-size: 40px;" id="profile-main-avatar">M</div>
                             <div>
-                                <h2 style="margin: 0;"><span id="profile-fullname"></span> <span id="my-premium-badge" style="display:none;"><i class="fas fa-check-circle premium-badge"></i></span></h2>
-                                <p style="margin: 5px 0; color: var(--primary-color);">@<span id="profile-username"></span></p>
+                                <h2 style="margin: 0;"><span id="profile-fullname">Mənim Adım</span> <span id="my-premium-badge" style="display:none;"><i class="fas fa-check-circle premium-badge"></i></span></h2>
+                                <p style="margin: 5px 0; color: var(--primary-color);">@<span id="profile-username">menim_profilim</span></p>
+                                <span style="font-size: 13px; color: #666;">Qeydiyyat tarixi: İyun 2026</span>
                             </div>
                         </div>
                         
@@ -546,10 +547,7 @@
             }, 300);
         }
 
-        const mockUsers = []; 
-
         document.addEventListener("DOMContentLoaded", () => {
-            // "vb_users" obyekti yoxdursa yarat (Bazada istifadəçiləri saxlamaq üçün)
             if(!localStorage.getItem('vb_users')) {
                 localStorage.setItem('vb_users', JSON.stringify({}));
             }
@@ -587,7 +585,6 @@
             }
         });
 
-        // TƏKMİLLƏŞDİRİLMİŞ: Şəkli yaddaşda saxlamazdan əvvəl sıxışdır (LocalStorage limiti dolmasın)
         function compressImage(file, callback) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -618,7 +615,7 @@
                 localStorage.setItem('vb_mainFeed', document.getElementById('feed-container').innerHTML);
                 localStorage.setItem('vb_profileFeed', document.getElementById('profile-posts-container').innerHTML);
             } catch (e) {
-                console.warn("Yaddaş limiti dolmuş ola bilər. Şəkillər çox böyükdür.");
+                console.warn("Yaddaş limiti dolmuş ola bilər.");
             }
         }
 
@@ -633,7 +630,6 @@
             else if(type === 'forgot') { document.getElementById('auth-title').innerText = "Parolun Bərpası"; document.getElementById('forgot-form').style.display = 'block'; }
         }
 
-        // YENİ ƏLAVƏ: LOGIN YOXLANIŞI
         function processLogin() {
             let uInp = document.getElementById('login-username').value.trim();
             let pInp = document.getElementById('login-password').value;
@@ -650,7 +646,7 @@
                 if(users[uInp].avatar) {
                     localStorage.setItem('vb_avatar', users[uInp].avatar);
                 } else {
-                    localStorage.removeItem('vb_avatar'); // Köhnə istifadəçinin avatarını təmizlə
+                    localStorage.removeItem('vb_avatar'); 
                 }
                 loginSuccess();
             } else {
@@ -660,7 +656,6 @@
 
         function loginSuccess() {
             localStorage.setItem('vb_LoggedIn', 'true');
-            // Səhifəni yeniləyirik ki, məlumatlar (ad, avatar) DOMContentLoaded vasitəsilə təmiz yüklənsin
             location.reload(); 
         }
 
@@ -676,7 +671,6 @@
             toggleAuth('login');
         }
 
-        // YENİ ƏLAVƏ: QEYDİYYAT YADDAŞI
         function validateRegistration() {
             const errorMsg = document.getElementById('reg-error');
             errorMsg.style.display = 'none';
@@ -697,7 +691,6 @@
 
             if (age < 18) { showError("Qeydiyyatdan keçmək üçün 18 yaşınız tamam olmalıdır."); return; }
 
-            // LocalStorage Bazasına Qeydiyyat
             let users = JSON.parse(localStorage.getItem('vb_users') || "{}");
             if (users[username]) {
                 showError("Bu istifadəçi adı artıq mövcuddur. Başqasını seçin.");
@@ -707,7 +700,6 @@
             users[username] = { fullname: fullname, password: pass, avatar: null };
             localStorage.setItem('vb_users', JSON.stringify(users));
 
-            // Mövcud sessiyanı təyin et
             localStorage.setItem('vb_username', username);
             localStorage.setItem('vb_fullname', fullname);
             localStorage.removeItem('vb_avatar'); 
@@ -746,6 +738,7 @@
             alert("Bildiriş məzmunu: " + user + " " + action);
         }
 
+        // YENİLƏNMİŞ: AXTARIŞ SİSTEMİ (Yerli bazadan çəkir)
         function executeSearch() {
             let query = document.getElementById('search-input').value.toLowerCase().trim();
             let resultsDiv = document.getElementById('search-results');
@@ -754,7 +747,19 @@
                 return;
             }
 
-            let filtered = mockUsers.filter(u => u.username.toLowerCase().includes(query) || u.name.toLowerCase().includes(query));
+            let localUsersObj = JSON.parse(localStorage.getItem('vb_users') || "{}");
+            let allUsers = [];
+
+            for (let key in localUsersObj) {
+                allUsers.push({
+                    username: '@' + key,
+                    name: localUsersObj[key].fullname,
+                    color: '#1da1f2', 
+                    letter: localUsersObj[key].fullname.charAt(0).toUpperCase()
+                });
+            }
+
+            let filtered = allUsers.filter(u => u.username.toLowerCase().includes(query) || u.name.toLowerCase().includes(query));
             
             if(filtered.length === 0) {
                 resultsDiv.innerHTML = '<p class="empty-state">İstifadəçi tapılmadı.</p>';
@@ -767,7 +772,7 @@
                 <li style="justify-content: space-between; padding: 15px; border-bottom: 1px solid var(--border-color);">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <div class="avatar-round" style="background:${u.color};">${u.letter}</div>
-                        <span><strong>${u.name}</strong> ${u.premium ? '<i class="fas fa-check-circle premium-badge"></i>' : ''}<br><small style="color:#666;">${u.username}</small></span>
+                        <span><strong>${u.name}</strong> <br><small style="color:#666;">${u.username}</small></span>
                     </div>
                     <button class="btn" style="width: auto; padding: 5px 15px;" onclick="openExternalProfile('${u.username}', '${u.color}', '${u.letter}')">Profilə bax</button>
                 </li>`;
@@ -791,7 +796,6 @@
                 if(translations[key]) el.innerText = translations[key];
             });
 
-            // TƏKMİLLƏŞDİRİLDİ: İstifadəçi məlumatları (Local Database) sinxronizasiyası
             let newName = document.getElementById('settings-fullname').value.trim();
             let newUsername = document.getElementById('settings-username').value.trim();
             let currentUser = localStorage.getItem('vb_username');
@@ -831,7 +835,6 @@
                     document.getElementById('nav-profile-avatar').innerHTML = imgTag;
                     localStorage.setItem('vb_avatar', base64); 
 
-                    // Bazadakı obyekti də yenilə
                     let currentUser = localStorage.getItem('vb_username');
                     if(currentUser) {
                         let users = JSON.parse(localStorage.getItem('vb_users') || "{}");
@@ -1027,48 +1030,42 @@
         function sendFollowRequest(username) {
             let cleanId = username.replace('@', '');
             let btn = document.getElementById('follow-btn-' + cleanId);
-            btn.innerText = 'İstək göndərildi';
-            btn.style.backgroundColor = '#6c757d';
-            btn.disabled = true;
+            if(btn) {
+                btn.innerText = 'İstək göndərildi';
+                btn.style.backgroundColor = '#6c757d';
+                btn.disabled = true;
+            }
             alert(username + " adlı istifadəçiyə izləmə istəyiniz (bildiriş) göndərildi!");
         }
 
+        // YENİLƏNMİŞ: Başqasının profili məlumatlarını yaddaşdan oxuyur
         function openExternalProfile(username, color, letter) {
             switchView('external-profile');
             document.getElementById('ext-profile-username').innerText = username;
             
-            let userObj = mockUsers.find(u => u.username === username);
-            let fullName = userObj ? userObj.name : username.replace('@', '').toUpperCase();
+            let cleanUsername = username.replace('@', '');
+            let users = JSON.parse(localStorage.getItem('vb_users') || "{}");
+            
+            let fullName = users[cleanUsername] ? users[cleanUsername].fullname : cleanUsername.toUpperCase();
             
             document.getElementById('ext-profile-fullname').innerText = fullName; 
             document.getElementById('ext-profile-avatar').style.background = color;
             document.getElementById('ext-profile-avatar').innerText = letter;
 
             let contentBox = document.getElementById('ext-profile-content');
-            let cleanId = username.replace('@', '');
             
-            if(username === '@ramiz_b' || username === '@sevda_88') {
-                contentBox.innerHTML = `
-                    <div class="box-panel" style="text-align:center; padding: 40px 20px;">
-                        <i class="fas fa-lock" style="font-size: 50px; color:#666; margin-bottom:15px;"></i>
-                        <h3 style="margin-top:0;">Bu profil bağlıdır</h3>
-                        <p style="color:#666;">Yalnız izləyicilər bu istifadəçinin paylaşımlarını görə bilər.</p>
-                        <button id="follow-btn-${cleanId}" class="btn" style="width:150px; margin-top:10px;" onclick="sendFollowRequest('${username}')">İzlə</button>
-                    </div>`;
-            } else {
-                contentBox.innerHTML = `
-                    <div class="box-panel post">
-                        <div class="post-header">
-                            <div class="avatar-round" style="background:${color};">${letter}</div>
-                            <div><strong>${fullName}</strong> (${username})<br><span style="font-size:12px; color:#666;">Yaxınlarda</span></div>
-                        </div>
-                        <div class="post-content"><p>Salam! Mənim profilim hər kəsə açıqdır. Gəlin tanış olaq!</p></div>
-                        <div class="post-actions">
-                            <span onclick="toggleLike(this)"><i class="fas fa-thumbs-up"></i> Bəyən (<span>5</span>)</span>
-                            <span onclick="repostPost(this)"><i class="fas fa-retweet"></i> Repost</span>
-                        </div>
-                    </div>`;
-            }
+            contentBox.innerHTML = `
+                <div class="box-panel post">
+                    <div class="post-header">
+                        <div class="avatar-round" style="background:${color};">${letter}</div>
+                        <div><strong>${fullName}</strong> (${username})<br><span style="font-size:12px; color:#666;">Yaxınlarda</span></div>
+                    </div>
+                    <div class="post-content"><p>Salam! Mənim profilim hər kəsə açıqdır. Gəlin tanış olaq!</p></div>
+                    <div class="post-actions">
+                        <span onclick="toggleLike(this)"><i class="fas fa-thumbs-up"></i> Bəyən (<span>0</span>)</span>
+                        <span onclick="repostPost(this)"><i class="fas fa-retweet"></i> Repost</span>
+                    </div>
+                </div>`;
         }
 
         function sendTextMsg() {
